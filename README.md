@@ -1,1 +1,2 @@
 # spotx-js-privacy
+
