@@ -1,0 +1,32 @@
+{
+  "name": "spotx-js-privacy",
+  "version": "0.0.1",
+  "description": "JS integration for the SpotX privacy portal.",
+  "author": "<jnevins@spotx.tv>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "handlebars": "^4.0.11",
+    "jquery": "1.12.4",
+    "puppeteer": "^1.2.0"
+  },
+  "devDependencies": {
+    "jasmine": "^3.1.0",
+    "jasmine-core": "^3.1.0",
+    "jasmine-reporters": "^2.3.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "jest": "^22.4.3",
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-coverage-istanbul-reporter": "^1.4.2",
+    "karma-istanbul-threshold": "^1.2.2",
+    "karma-jasmine-html-reporter": "^1.0.0",
+    "karma-junit-reporter": "^1.2.0"
+  },
+  "scripts": {
+    "test": "jest --coverage",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch"
+  },
+  "jest": {}
+}

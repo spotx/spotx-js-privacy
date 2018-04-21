@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Privacy Demo</title>
+</head>
+<body>
+
+  <!-- The  view container where the template will be rendered. -->
+  <span id="privacy-container"></span>
+
+    <script id="privacy-template" type="text/x-handlebars-template">
+      <h1>SpotX Privacy Portal</h1>
+
+      <label>Device Type:
+        <select id="sx-device-type">
+            <option value=0>Browser</option>
+            <option value="1">Some IDFA</option>
+        </select>
+      </label>
+      <br>
+      <br>
+      {{#ifDeviceTypeWithId}}
+      <label>Device ID:
+        <input type="text" id="sx-device-id"></input>
+      </label>
+      <br>
+      <br>
+      {{/ifDeviceTypeWithId}}
+      <button type="button" id="sx-get-privacy-data">Get My Data</button>
+      <button type="button" id="sx-post-anonymize-me">Anonymize Me</button>
+      <br>
+      {{#ifData}}
+        <h2>Your audience ID is synced with the following Data Management Platforms</h2>
+        {{#each data.dmps}}
+          <li>{{this}}</li>
+        {{/each}}
+        <h2>Your audience ID is synced with the following Data Supply Platforms</h2>
+        {{#each data.dsps}}
+          <li>{{this}}</li>
+        {{/each}}      
+        <h2>Your audience ID is associated with the following audience segments</h2>
+        {{#each data.tags}}
+          <li>{{this}}</li>
+        {{/each}}
+      {{/ifData}}
+      {{#if message}}
+        {{message}}
+      {{/if}}
+    </script>
+    <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="./node_modules/handlebars/dist/handlebars.min.js"></script>
+    <script type="text/javascript" src="./src/app/privacy.js"></script>
+    <script type="text/javascript">
+
+      //////////////////////////////////
+      // Configure dependencies
+      //////////////////////////////////
+      var config = new SxPrivacy.Config(
+        "sx-device-type",
+        "sx-device-id",
+        "sx-get-privacy-data",
+        "sx-post-anonymize-me"
+      );
+
+      var viewDriver = new SxPrivacy.ViewDriver(
+        document.getElementById("privacy-template").innerHTML,
+        document.getElementById("privacy-container"),
+        new SxPrivacy.HandlebarsWrapper()
+      );
+
+      //////////////////////////////////
+      // Run the app
+      //////////////////////////////////
+      SxPrivacy.Main.run(config, viewDriver);
+    </script>
+</body>
+</html>
