@@ -2,6 +2,10 @@ const SxPrivacy = require('../../src/app/privacy');
 const PrivacyMocks = require('../mocks/privacy.mocks');
 
 describe('privacy.js unit tests', function() {
+    it('should fail', () => {
+        expect(true).toBeFalsy();
+    });
+
     describe('Model tests', function() {
         it('should create an instance', function() {
             // Arrange
