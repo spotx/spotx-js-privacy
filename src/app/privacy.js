@@ -167,7 +167,7 @@ SxPrivacy.ViewDriver = (function() {
 }());
 
 /**
- * The data service for the privacy API
+ * The data service for the privacy API.
  */
 SxPrivacy.Service = (function() {
     /**
@@ -211,16 +211,28 @@ SxPrivacy.Service = (function() {
         .fail(failureCallback);
     }
 
+    /**
+     * Posts a request for anonymization for a browser cookie.
+     * @param {Function} successCallback Called on success.
+     * @param {Function} failureCallback Called on failure.
+     */
     Service.prototype.anonymizeNative = function(successCallback, failureCallback) {
         //TODO: send all cookies
         jQuery.ajax({ 
-            method: "GET",
+            method: "POST",
             url: this.nativeUrl 
         })
         .done(successCallback)
         .fail(failureCallback);
     }
 
+    /**
+     * Posts a request for anonymization for a foreign ID.
+     * @param {number} deviceType The enumerated value for the supported device type.
+     * @param {string} deviceId The foreign id.
+     * @param {Function} successCallback Called on success.
+     * @param {Function} failureCallback Called on failure.
+     */
     Service.prototype.anonymizeForeign = function(deviceType, deviceId, successCallback, failureCallback) {
         
         jQuery.ajax({ 
@@ -234,7 +246,6 @@ SxPrivacy.Service = (function() {
         })
         .done(successCallback)
         .fail(failureCallback);
-
     }
 
     return Service;
@@ -289,6 +300,9 @@ SxPrivacy.Main = (function() {
         if (anonymizeIdDomeElement) anonymizeIdDomeElement.addEventListener("click", this.postAnonymize.bind(this));
     }
 
+    /**
+     * Read audience data from the service.
+     */
     Main.prototype.getData = function() {
         
         if (this.viewDriver.model.deviceType > 0) {
