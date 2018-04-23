@@ -441,6 +441,86 @@ describe('privacy.js unit tests', () => {
             // Assert
             expect(viewDriverStub.render).toHaveBeenCalledWith(new SxPrivacy.Model());
         });
+
+        it('should register a handler for the device type combo box', () => {
+            // Arrange
+            const eventListener = jasmine.createSpy('eventListener');
+            const selectId = 'selectId';
+            spyOn(document, 'getElementById').and.callFake((selector) => {
+                if (selector === selectId) {
+                    return {
+                        addEventListener: eventListener
+                    }
+                }
+            });
+
+            // Act
+            let main = new SxPrivacy.Main({selectId: selectId}, {}, {})
+            main.registerEventHandlers();
+
+            // Assert
+            expect(eventListener).toHaveBeenCalled();
+        });
+
+        it('should register a handler for the foreign ID input', () => {
+            // Arrange
+            const eventListener = jasmine.createSpy('eventListener');
+            const inputId = 'inputId';
+            spyOn(document, 'getElementById').and.callFake((selector) => {
+                if (selector === inputId) {
+                    return {
+                        addEventListener: eventListener
+                    }
+                }
+            });
+
+            // Act
+            let main = new SxPrivacy.Main({inputId: inputId}, {}, {})
+            main.registerEventHandlers();
+
+            // Assert
+            expect(eventListener).toHaveBeenCalled();
+        });
+
+        it('should register a handler for the get data button', () => {
+            // Arrange
+            const eventListener = jasmine.createSpy('eventListener');
+            const getDataId = 'getDataId';
+            spyOn(document, 'getElementById').and.callFake((selector) => {
+                if (selector === getDataId) {
+                    return {
+                        addEventListener: eventListener
+                    }
+                }
+            });
+
+            // Act
+            let main = new SxPrivacy.Main({getDataId: getDataId}, {}, {})
+            main.registerEventHandlers();
+
+            // Assert
+            expect(eventListener).toHaveBeenCalled();
+        });
+
+        it('should register a handler for the anonymize button', () => {
+            // Arrange
+            const eventListener = jasmine.createSpy('eventListener');
+            const anonymizeId = 'anonymizeId';
+            spyOn(document, 'getElementById').and.callFake((selector) => {
+                if (selector === anonymizeId) {
+                    return {
+                        addEventListener: eventListener
+                    }
+                }
+            });
+
+            // Act
+            let main = new SxPrivacy.Main({anonymizeId: anonymizeId}, {}, {})
+            main.registerEventHandlers();
+
+            // Assert
+            expect(eventListener).toHaveBeenCalled();
+        });
     });
 });
                 
