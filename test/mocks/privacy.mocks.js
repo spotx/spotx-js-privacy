@@ -23,7 +23,20 @@ var viewDriverMockFactory = (function () {
     }
 })();
 
+var modelMockFactory = (function () {
+    return {
+        getMock: function() {
+            return {
+                data: {
+                    isData: jasmine.createSpy('isData')
+                }
+            }
+        }
+    }
+})();
+
 module.exports = {
     HandlebarsWrapperMockFactory,
-    viewDriverMockFactory
+    viewDriverMockFactory,
+    modelMockFactory
 }
