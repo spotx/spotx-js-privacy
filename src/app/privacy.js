@@ -6,7 +6,18 @@
 
 var SxPrivacy = SxPrivacy || {};
 
+/**
+ * The configuration object for SxPrivacy. It holds values
+ * for selctors that we ass to handlebars in order to bind
+ * the view to executable code.
+ */
 SxPrivacy.Config = (function() {
+    /**
+     * @param {string} selectId The id for the combobox.
+     * @param {string} inputId The id for the input field.
+     * @param {string} getDataId The id for the "show me my data" button.
+     * @param {string} anonymizeId The id for the "anonymize me" button.
+     */
     function Config(selectId, inputId, getDataId, anonymizeId) {
         this.selectId = selectId;
         this.inputId = inputId;
@@ -21,6 +32,9 @@ SxPrivacy.Config = (function() {
  * fake to dependent classes under test.
  */
 SxPrivacy.HandlebarsWrapper = (function() {
+    /**
+     * Sets a reference to the global Handlebars instance.
+     */
     function HandlebarsWrapper() {
         this.handlebars = Handlebars;
     }
@@ -31,6 +45,11 @@ SxPrivacy.HandlebarsWrapper = (function() {
  * The data model for the privacy app.
  */
 SxPrivacy.Model = (function() {
+    /**
+     * Constructs a data model from data retrieved from
+     * the service.
+     * @param {Object} rawData 
+     */
     function Model(rawData) {
         this.status = rawData && (rawData.status || rawData.status === 0) ? rawData.status : null;
         this.dsps = rawData && rawData.dsps ? rawData.dsps : [];
@@ -43,6 +62,7 @@ SxPrivacy.Model = (function() {
     };
     return Model;
 }());
+
 
 /**
  * The view driver for the privacy app. I handles 
@@ -59,6 +79,9 @@ SxPrivacy.ViewDriver = (function() {
         this.container = container;
         this.handlebarsWrapper = handlebarsWrapper;
         
+        /**
+         * The view model that is rendered to the page.
+         */
         this.model = {
             deviceType: 0,
             deviceId: '',
@@ -79,6 +102,10 @@ SxPrivacy.ViewDriver = (function() {
         this.render();
     }
 
+    /**
+     * Render the view with a given message.
+     * @param {string} message The message that should appear. 
+     */
     ViewDriver.prototype.renderWithMessage = function(message) {
         // clear the data model
         this.model.data = new SxPrivacy.Model();
@@ -86,26 +113,49 @@ SxPrivacy.ViewDriver = (function() {
         this.render();
     }
 
+    /**
+     * Render the view.
+     */
     ViewDriver.prototype.render = function() {
         this.container.innerHTML = this.template(this.model);
     }
 
+    /**
+     * The device type has changed, so render the view so that it can reflect
+     * the change.
+     * @param {number} deviceType 
+     */
     ViewDriver.prototype.handleDeviceChange = function(deviceType) {
         this.model.deviceType = deviceType;
+        // If device id is not supported for that type, clear it.
         if (deviceType < 1) this.model.deviceId = '';
         this.renderWithData();
     }
 
+    /**
+     * Update the view model with a changed foreign id.
+     * @param {string} id 
+     */
     ViewDriver.prototype.handleIdChange = function(id) {
         this.model.deviceId = id;
     }
 
+    /**
+     * Register custom "if" helpers with Handlebars.
+     */
     ViewDriver.prototype.registerHelpers = function() {
+        /**
+         * Render the wrapped view if the provided device type supports a device id.
+         */
         this.handlebarsWrapper.handlebars.registerHelper('ifDeviceTypeWithId', function(options) {
             if (options.data.root.deviceType > 0) {
                 return options.fn(this);
             }
           });
+
+        /**
+         * Render the wrapped view if the provided data set is not empty.
+         */
         this.handlebarsWrapper.handlebars.registerHelper('ifData', function(options) {
             if (options.data.root.data.isData()) {
                 return options.fn(this);
@@ -190,6 +240,7 @@ SxPrivacy.Service = (function() {
     return Service;
 }());
 
+
 /**
  * Main class for the privacy app.  The main entry point is Main.run.
  */
@@ -255,17 +306,27 @@ SxPrivacy.Main = (function() {
         }
     }
 
+    /**
+     * Callback for a succesful return from the read service.
+     * @param {Object} data The data in its raw form.
+     */
     Main.prototype.readSuccessCallback = function(data) {
         this.viewDriver.renderWithData(new SxPrivacy.Model(data));
         this.registerEventHandlers();
     }
 
+    /**
+     * Callback for a filed return from the read service.
+     */
     Main.prototype.readFailureCallback = function() {
         var errorMessage = "There was a problem retrieving data for your audience ID. Please check your selections and try again.";
         this.viewDriver.renderWithMessage(errorMessage);
         this.registerEventHandlers();        
     }
 
+    /**
+     * Function for calling the data service to anonymize a user.
+     */
     Main.prototype.postAnonymize = function() {
         if (this.viewDriver.model.deviceType > 0) {
             this.dataService.anonymizeForeign(
@@ -282,23 +343,37 @@ SxPrivacy.Main = (function() {
         }   
     }
 
+    /**
+     * Callback for handling a successful post for anonymization.
+     */
     Main.prototype.postSuccessCallback = function() {
         var message = "Congratulations! You are now anonymous.";
         this.viewDriver.renderWithMessage(message);
         this.registerEventHandlers();                
     }
 
+    /**
+     * Callback for handling a failure to anonymize.
+     */
     Main.prototype.postFailureCallback = function() {
         var errorMessage = "There was a problem anonymizing your profile. Please try again later.";
         this.viewDriver.renderWithMessage(errorMessage);
         this.registerEventHandlers();                
     }
 
+    /**
+     * Handles a chanve in the device type combo box.
+     * @param {Event} event 
+     */
     Main.prototype.handleDeviceChange = function(event) {
         this.viewDriver.handleDeviceChange(event.target.value);
         this.registerEventHandlers();       
     }
 
+    /**
+     * Handle a change in the inupt for doreign ID.
+     * @param {Event} event 
+     */
     Main.prototype.handleIdChange = function(event) {
         this.viewDriver.handleIdChange(event.target.value);
         this.registerEventHandlers();
@@ -307,6 +382,7 @@ SxPrivacy.Main = (function() {
     return Main;
 }());
 
+/** Export the module for test.*/
 try {
     module.exports = SxPrivacy;    
 } catch (e) {
