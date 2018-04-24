@@ -161,6 +161,15 @@ SxPrivacy.ViewDriver = (function() {
                 return options.fn(this);
             }
           });
+
+        /**
+         * Determine the selected option of a select against the view model.
+         */
+        this.handlebarsWrapper.handlebars.registerHelper('ifDeviceSelected', function(selectValue, options) {
+            if (options.data.root.deviceType == selectValue) {
+                return options.fn(this);
+            }
+        });
     }
 
     return ViewDriver;
@@ -291,13 +300,13 @@ SxPrivacy.Main = (function() {
         
         var selectIdDomElement = document.getElementById(this.config.selectId);
         var inputIdDomElement = document.getElementById(this.config.inputId);
-        var getDataIdDomeElement = document.getElementById(this.config.getDataId);
-        var anonymizeIdDomeElement = document.getElementById(this.config.anonymizeId)
+        var getDataIdDomElement = document.getElementById(this.config.getDataId);
+        var anonymizeIdDomElement = document.getElementById(this.config.anonymizeId)
         
-        if (selectIdDomElement) selectIdDomElement.addEventListener("click", this.handleDeviceChange.bind(this));
+        if (selectIdDomElement) selectIdDomElement.addEventListener("change", this.handleDeviceChange.bind(this));
         if (inputIdDomElement) inputIdDomElement.addEventListener("input", this.handleIdChange.bind(this));
-        if (getDataIdDomeElement) getDataIdDomeElement.addEventListener("click", this.getData.bind(this));
-        if (anonymizeIdDomeElement) anonymizeIdDomeElement.addEventListener("click", this.postAnonymize.bind(this));
+        if (getDataIdDomElement) getDataIdDomElement.addEventListener("click", this.getData.bind(this));
+        if (anonymizeIdDomElement) anonymizeIdDomElement.addEventListener("click", this.postAnonymize.bind(this));
     }
 
     /**
@@ -350,7 +359,7 @@ SxPrivacy.Main = (function() {
                 this.postFailureCallback.bind(this)
             );
         } else {
-            this.dataService.getNativeData(
+            this.dataService.anonymizeNative(
                 this.postSuccessCallback.bind(this),
                 this.postFailureCallback.bind(this)
             );
@@ -390,7 +399,6 @@ SxPrivacy.Main = (function() {
      */
     Main.prototype.handleIdChange = function(event) {
         this.viewDriver.handleIdChange(event.target.value);
-        this.registerEventHandlers();
     }
 
     return Main;

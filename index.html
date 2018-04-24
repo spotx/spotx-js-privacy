@@ -14,8 +14,8 @@
 
       <label>Device Type:
         <select id="sx-device-type">
-            <option value=0>Browser</option>
-            <option value="1">Some IDFA</option>
+            <option value=0 {{#ifDeviceSelected 0}} selected {{/ifDeviceSelected}}>Browser</option>
+            <option value=1 {{#ifDeviceSelected 1}} selected {{/ifDeviceSelected}} >Some IDFA</option>
         </select>
       </label>
       <br>
